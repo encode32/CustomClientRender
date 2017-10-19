@@ -20,11 +20,46 @@ public class CustomClientRenderMod implements WurmClientMod, Initable, PreInitab
 	
 	public static Logger logger = Logger.getLogger("CustomClientRenderMod");
 	
+	private static boolean renderWeather = true;
+	private static boolean renderSky = true;
+	private static boolean renderTerrain = true;
+	private static boolean renderCave = true;
+	private static boolean renderWater = true;
+	private static boolean renderParticles = true;
 	private static boolean renderGrass = true;
-	
 	private static boolean renderTrees = true;
 	
 	public static boolean handleInput(final String cmd, final String[] data) {
+		if (cmd.toLowerCase().equals("toggleweather")) {
+			renderWeather = !renderWeather;
+			hud.consoleOutput("[CustomClientRenderMod] renderWeather: " + Boolean.toString(renderWeather));
+			return true;
+		}
+		if (cmd.toLowerCase().equals("togglesky")) {
+			renderSky = !renderSky;
+			hud.consoleOutput("[CustomClientRenderMod] renderSky: " + Boolean.toString(renderSky));
+			return true;
+		}
+		if (cmd.toLowerCase().equals("toggleterrain")) {
+			renderTerrain = !renderTerrain;
+			hud.consoleOutput("[CustomClientRenderMod] renderTerrain: " + Boolean.toString(renderTerrain));
+			return true;
+		}
+		if (cmd.toLowerCase().equals("togglecave")) {
+			renderCave = !renderCave;
+			hud.consoleOutput("[CustomClientRenderMod] renderCave: " + Boolean.toString(renderCave));
+			return true;
+		}
+		if (cmd.toLowerCase().equals("togglewater")) {
+			renderWater = !renderWater;
+			hud.consoleOutput("[CustomClientRenderMod] renderWater: " + Boolean.toString(renderWater));
+			return true;
+		}
+		if (cmd.toLowerCase().equals("toggleparticles")) {
+			renderParticles = !renderParticles;
+			hud.consoleOutput("[CustomClientRenderMod] renderParticles: " + Boolean.toString(renderParticles));
+			return true;
+		}
 		if (cmd.toLowerCase().equals("togglegrass")) {
 			renderGrass = !renderGrass;
 			hud.consoleOutput("[CustomClientRenderMod] renderGrass: " + Boolean.toString(renderGrass));
@@ -40,6 +75,12 @@ public class CustomClientRenderMod implements WurmClientMod, Initable, PreInitab
 	
 	@Override
 	public void configure(Properties properties) {
+		renderWeather = Boolean.valueOf(properties.getProperty("renderWeather", Boolean.toString(renderWeather)));
+		renderSky = Boolean.valueOf(properties.getProperty("renderSky", Boolean.toString(renderSky)));
+		renderTerrain = Boolean.valueOf(properties.getProperty("renderTerrain", Boolean.toString(renderTerrain)));
+		renderCave = Boolean.valueOf(properties.getProperty("renderCave", Boolean.toString(renderCave)));
+		renderWater = Boolean.valueOf(properties.getProperty("renderWater", Boolean.toString(renderWater)));
+		renderParticles = Boolean.valueOf(properties.getProperty("renderParticles", Boolean.toString(renderParticles)));
 		renderGrass = Boolean.valueOf(properties.getProperty("renderGrass", Boolean.toString(renderGrass)));
 		renderTrees = Boolean.valueOf(properties.getProperty("renderTrees", Boolean.toString(renderTrees)));
 	}
@@ -63,6 +104,72 @@ public class CustomClientRenderMod implements WurmClientMod, Initable, PreInitab
 					() -> (proxy, method, args) -> {
 						method.invoke(proxy, args);
 						hud = (HeadsUpDisplay) proxy;
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.weather.Weather", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderWeather)
+						{
+							method.invoke(proxy, args);
+						}
+						
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.sky.SkyRenderer", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderSky)
+						{
+							method.invoke(proxy, args);
+						}
+						
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.TerrainRenderer", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderTerrain)
+						{
+							method.invoke(proxy, args);
+						}
+						
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.cave.CaveRender", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderCave)
+						{
+							method.invoke(proxy, args);
+						}
+						
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.WaterRenderer", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderWater)
+						{
+							method.invoke(proxy, args);
+						}
+						
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.particles.ParticleRenderer", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderParticles)
+						{
+							method.invoke(proxy, args);
+						}
+						
 						return null;
 					});
 			
