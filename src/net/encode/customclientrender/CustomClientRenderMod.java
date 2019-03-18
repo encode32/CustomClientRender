@@ -151,7 +151,18 @@ public class CustomClientRenderMod implements WurmClientMod, Initable, PreInitab
 						return null;
 					});
 			
-			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.WaterRenderer", "execute",
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.AdvancedWaterRenderer", "execute",
+					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
+						
+						if(renderWater)
+						{
+							method.invoke(proxy, args);
+						}
+						
+						return null;
+					});
+			
+			HookManager.getInstance().registerHook("com.wurmonline.client.renderer.terrain.BasicWaterRenderer", "execute",
 					"(Ljava/lang/Object;)V", () -> (proxy, method, args) -> {
 						
 						if(renderWater)
